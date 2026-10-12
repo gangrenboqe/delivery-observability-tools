@@ -13,7 +13,7 @@
 
 ## 2. 数据源（真实存在，先确认格式再动手）
 
-- 位置：`C:\Users\Administrator\.omniroute\call_logs\<YYYY-MM-DD>\`
+- 位置：`C:\Users\Administrator\.omniroute\call_logs/`
 - 内容：每一次模型调用的记录（HTTP 状态、耗时、输入输出 token）
 - 🔴 **第一步必须先看真实文件确认字段**，不要凭想象写解析。
 - 🔴 **隐私**：日志里可能含请求内容或密钥 → **解析时只取数字与状态字段，正文一律不读不存**。
