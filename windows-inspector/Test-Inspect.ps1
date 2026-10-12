@@ -108,6 +108,25 @@ $falseAlarm = @($r2 | Where-Object {
 })
 Assert-Equal $falseAlarm.Count 0 "按需启动且停止的服务未被误报为异常"
 
+Write-Host "`n=== 7. 入口集成（脚本必须真能跑起来）===" -ForegroundColor Cyan
+# 这组是被一个真 bug 逼出来的：
+#   主脚本判断"是否被直接运行"时写成了 `InvocationName -eq MyCommand.Name`，
+#   用 `powershell -File` 跑时两者不相等 → 整个入口被跳过 → **脚本静默什么都不做**。
+#   而自测是 dot-source 调函数的，**永远走不到这个分支**，所以 58 项断言全绿也照样漏。
+#   → 必须起一个真子进程跑一遍，才测得到入口。
+$scriptPath = Join-Path $PSScriptRoot "Inspect-Windows.ps1"
+$tmpOut = Join-Path $env:TEMP ("inspect_once_" + [guid]::NewGuid().ToString("N") + ".txt")
+# ⚠️ 这里**不能用 Start-Process**：本机环境变量里同时存在 http_proxy 与 HTTP_PROXY，
+#    PowerShell 5.1 的 Start-Process 会因"重复键"直接抛 ArgumentException。
+#    改用调用运算符 + 重定向，效果一样且不会踩这个坑。
+& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $scriptPath -Once *>&1 |
+    Out-File -FilePath $tmpOut -Encoding UTF8
+Assert-Equal $LASTEXITCODE 0 "以 -Once 非交互模式运行时退出码为 0"
+$onceOut = if (Test-Path $tmpOut) { Get-Content $tmpOut -Raw } else { "" }
+Assert-Equal ($onceOut.Length -gt 200) $true "非交互模式确实输出了内容（实际 $([math]::Round($onceOut.Length)) 字符）"
+Assert-Equal ($onceOut.Contains("体检结果")) $true "输出里含体检结果小标题"
+Remove-Item $tmpOut -ErrorAction SilentlyContinue
+
 Write-Host "`n========================================" -ForegroundColor Cyan
 Write-Host ("通过 {0} 项，失败 {1} 项" -f $script:Pass, $script:Fail) -ForegroundColor $(if ($script:Fail -eq 0) { "Green" } else { "Red" })
 if ($script:Fail -gt 0) { exit 1 }

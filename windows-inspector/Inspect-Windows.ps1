@@ -17,6 +17,14 @@
     自测：powershell -ExecutionPolicy Bypass -File Test-Inspect.ps1
 #>
 
+param(
+    # 非交互模式：执行一次体检、打印结果后退出，不进入菜单。
+    # 自动化脚本与 CI 用这个；日常使用直接运行不带参数即可。
+    [switch]$Once,
+    # 配合 -Once 使用：把脱敏后的报告写到指定路径。
+    [string]$ExportPath = ""
+)
+
 # ============================ 基础函数 ============================
 
 function Get-StatusLevel {
@@ -387,8 +395,24 @@ function Show-Menu {
     }
 }
 
-# 直接运行时进入菜单；被 dot-source 时只加载函数（便于自测）
-if ($MyInvocation.InvocationName -eq $MyInvocation.MyCommand.Name) {
+# 判断"是否被直接运行"的正确写法：
+#   dot-source 时 $MyInvocation.InvocationName 等于 "."
+# 🔴 曾写成 `InvocationName -eq MyCommand.Name` —— 用 `powershell -File` 跑时
+#    两者不相等（一个是完整路径、一个是文件名），整个入口块被跳过，
+#    脚本**静默什么都不做**。CI 第一次跑就撞上了这个问题。
+if ($MyInvocation.InvocationName -ne '.') {
+    if ($Once) {
+        # 非交互模式：跑一次体检、打印结果、退出。
+        # 用途 = 自动化脚本与 CI —— 交互菜单在无人值守环境里会一直等输入。
+        $result = Invoke-Inspection
+        Format-ConsolReport $result
+        if ($ExportPath) {
+            $saved = Export-Report -Findings $result -Path $ExportPath
+            Write-Host ""
+            Write-Host "Report exported: $saved" -ForegroundColor Green
+        }
+        exit 0
+    }
     Write-Host "提示：部分检查（系统错误事件）在非管理员 PowerShell 下可能读不到。" -ForegroundColor DarkGray
     while ($true) { Show-Menu; if ($null -eq (Read-Host "按回车继续，或输入 q 退出")) { break } }
 }

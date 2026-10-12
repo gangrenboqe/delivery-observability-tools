@@ -1,0 +1,54 @@
+name: tests
+
+# 每个 push / PR 自动跑一遍全部工具的测试。
+# 目的：README 上写的"22 / 33 / 58 项全过"不是一句要相信作者的话，
+# 而是每次都由机器重跑。
+
+# 踩过的坑（Windows 分支，别改回去）：
+# 1) Windows runner 默认用 PowerShell 执行命令。带中文 + 引号的命令会被解析坏，
+#    所以 run: 里只写 ASCII，中文只出现在注释和步骤名里。
+# 2) Windows 控制台不是 UTF-8，Python 打印中文会炸，所以固定 PYTHONIOENCODING。
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python-tools:
+    name: py ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11", "3.13"]
+    env:
+      PYTHONIOENCODING: utf-8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: model-call-report
+        run: python -m unittest discover -s model-call-report/tests
+
+      - name: log-triage
+        run: python -m unittest discover -s log-triage/tests
+
+  windows-inspector:
+    name: PowerShell self-test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Run assertions
+        shell: pwsh
+        run: ./windows-inspector/Test-Inspect.ps1
+
+      - name: Run a real inspection
+        shell: pwsh
+        run: ./windows-inspector/Inspect-Windows.ps1 -Once
