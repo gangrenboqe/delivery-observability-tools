@@ -3,6 +3,7 @@
 运行：python -m unittest discover -s tests
 """
 
+import datetime as dtmod
 import json
 import sys
 import unittest
@@ -94,8 +95,24 @@ class TestSafeFields(unittest.TestCase):
         self.assertEqual(out["tokens_in"], 3)
         self.assertEqual(out["tokens_out"], 5)
 
-    def test_timestamp_parse(self):
-        self.assertEqual(_parse_ts("2026-10-06T02:57:03.211Z"), "2026-10-06 10:57:03")
+    def test_timestamp_parse_keeps_same_instant(self):
+        """🔴 这条断言曾经写死"北京时间 10:57:03"，在 UTC 的 CI 上必然失败。
+        正确的测法不是比字符串，而是验"表示的是同一个时刻"。
+        写死的时区假设 = 只能在作者自己的机器上通过。"""
+        raw = "2026-10-06T02:57:03.211Z"
+        utc_dt = dtmod.datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        got = dtmod.datetime.strptime(_parse_ts(raw), "%Y-%m-%d %H:%M:%S")
+        got_aware = got.replace(tzinfo=dtmod.datetime.now().astimezone().tzinfo)
+        self.assertAlmostEqual(got_aware.timestamp(), utc_dt.timestamp(), delta=1.0)
+
+    def test_timestamp_is_local_not_utc(self):
+        """它显示的必须是**本地时间**——日志是 UTC，直接显示会差 8 小时。"""
+        raw = "2026-10-06T02:57:03.211Z"
+        utc_text = dtmod.datetime.fromisoformat(raw.replace("Z", "+00:00")).strftime("%Y-%m-%d %H:%M:%S")
+        if dtmod.datetime.now().astimezone().tzinfo == dtmod.timezone.utc:
+            self.assertEqual(_parse_ts(raw), utc_text)  # 本机就是 UTC，两者本应相同
+        else:
+            self.assertNotEqual(_parse_ts(raw), utc_text)
 
     def test_timestamp_bad_input_kept(self):
         self.assertEqual(_parse_ts("not-a-time"), "not-a-time")
