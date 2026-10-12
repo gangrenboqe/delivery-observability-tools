@@ -1,0 +1,2 @@
+# 零第三方依赖：只用 Python 标准库（json / re / argparse / pathlib / datetime / collections）
+# 运行：python llm_call_report.py

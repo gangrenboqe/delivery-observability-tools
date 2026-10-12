@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.check.txt
+.test_out.txt
+.inspect_out.txt
+巡检报告-*.md

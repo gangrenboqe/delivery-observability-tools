@@ -1,0 +1,2 @@
+# 零第三方依赖：只用Windows 自带 cmdlet（Get-CimInstance / Get-NetTCPConnection / Get-Service / Get-ScheduledTask / Get-WinEvent）
+# 不需要安装任何模块。
