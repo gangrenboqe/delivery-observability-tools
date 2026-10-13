@@ -42,7 +42,7 @@ cd windows-inspector && powershell -ExecutionPolicy Bypass -File Inspect-Windows
 ```bash
 cd model-call-report && python -m unittest discover -s tests   # 22 项
 cd log-triage       && python -m unittest discover -s tests   # 33 项
-powershell -ExecutionPolicy Bypass -File windows-inspector/Test-Inspect.ps1  # 58 项断言
+powershell -ExecutionPolicy Bypass -File windows-inspector/Test-Inspect.ps1  # 61 项断言
 ```
 
 **依赖：无。**三个工具都只用 Python 标准库 / Windows 自带 cmdlet。

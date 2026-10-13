@@ -12,7 +12,7 @@
 # 交互式菜单（推荐：不懂技术的人也能用）
 powershell -ExecutionPolicy Bypass -File Inspect-Windows.ps1
 
-# 自测（58 项断言）
+# 自测（61 项断言）
 powershell -ExecutionPolicy Bypass -File Test-Inspect.ps1
 ```
 
@@ -84,7 +84,7 @@ q. 退出
 
 ---
 
-## 测试：58 项断言
+## 测试：61 项断言
 
 `Test-Inspect.ps1` 不依赖 Pester，用最朴素的方式断言：
 
