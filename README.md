@@ -79,7 +79,7 @@ powershell -ExecutionPolicy Bypass -File windows-inspector/Test-Inspect.ps1  # 6
 
 README 曾写"58 项断言"。10 月 13 日给工具入口补集成断言后实测：
 **61 项通过、0 项失败**——文档里的 58 是加集成断言之前的旧数。
-已把 README 更正为 61（提交 `1848242`）。
+已把 README 更正为 61（提交 `b0179c3`）。
 小事，但它再次验证了本仓库的规矩：**数字不靠记忆，靠当场复跑。**
 
 > 本节初稿由 AI 助手从提交历史中整理。按"写的人不审自己"的规矩，
