@@ -1,0 +1,13 @@
+{
+  "summary": {
+    "timestamp": "2026-11-01T03:36:10.000Z",
+    "status": 429,
+    "model": "generic-llm-model",
+    "duration": 300,
+    "tokens": {
+      "in": 100,
+      "out": 0
+    }
+  },
+  "error": "HTTP 429: rate limited by upstream"
+}

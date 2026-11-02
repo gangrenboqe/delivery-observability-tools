@@ -1,0 +1,12 @@
+{
+  "summary": {
+    "timestamp": "2026-11-01T02:27:10.000Z",
+    "status": 200,
+    "model": "generic-llm-model",
+    "duration": 2400,
+    "tokens": {
+      "in": 310,
+      "out": 780
+    }
+  }
+}

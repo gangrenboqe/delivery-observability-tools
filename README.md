@@ -4,6 +4,24 @@
 
 ---
 
+## 三步跑起来（不需要联网、不需要任何 key）
+
+```bash
+git clone https://github.com/gangrenboqe/delivery-observability-tools.git
+cd delivery-observability-tools
+cd model-call-report && python llm_call_report.py --log-dir ../samples/logs --out out
+cd ../log-triage && python log_triage.py --log-dir ../samples/logs --all-files --out out
+# → 两份报表：12 条合成调用日志 → 成功率 66.67%、4 条失败归并成 3 类
+```
+
+- 内置样例日志：`samples/logs/`（12 条合成网关调用记录，无任何真实数据）
+- 真实输出快照：[docs/model-call-report_report_snapshot.md](docs/model-call-report_report_snapshot.md) ·
+  [docs/log-triage_report_snapshot.md](docs/log-triage_report_snapshot.md)（**4 条失败被归并成 3 类**——这正是工具的核心价值）
+- 陌生人复验记录见 [docs/STRANGER_REVIEW.md](docs/STRANGER_REVIEW.md)
+- `windows-inspector` 巡检的是**运行者自己的电脑**（只读），跑法见下方「怎么跑」第 3 条
+
+---
+
 > **协作方式说明**：本仓库的代码由设计者与 AI 编程助手协作完成——
 > 设计者负责定义需求、设定验收标准并逐项验证结果，代码由 AI 生成。
 > 文中所有数字均在真机实测；凡未实测的部分均已明确标注。

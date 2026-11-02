@@ -1,0 +1,13 @@
+{
+  "summary": {
+    "timestamp": "2026-11-01T03:18:10.000Z",
+    "status": 500,
+    "model": "generic-llm-model",
+    "duration": 5000,
+    "tokens": {
+      "in": 140,
+      "out": 0
+    }
+  },
+  "error": "HTTP 500: upstream timeout after 123ms"
+}
