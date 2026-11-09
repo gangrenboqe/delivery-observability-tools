@@ -58,12 +58,22 @@ cd windows-inspector && powershell -ExecutionPolicy Bypass -File Inspect-Windows
 **测试**（纯标准库，毫秒级，不起服务、不联网）：
 
 ```bash
-cd model-call-report && python -m unittest discover -s tests   # 22 项
+cd model-call-report && python -m unittest discover -s tests   # 23 项
 cd log-triage       && python -m unittest discover -s tests   # 33 项
 powershell -ExecutionPolicy Bypass -File windows-inspector/Test-Inspect.ps1  # 61 项断言
 ```
 
 **依赖：无。**三个工具都只用 Python 标准库 / Windows 自带 cmdlet。
+
+### 五分钟复现（从 clone 到看到效果）
+
+```bash
+git clone https://github.com/gangrenboqe/delivery-observability-tools.git && cd delivery-observability-tools
+cd model-call-report && python -m unittest discover -s tests   # 23 项全绿（毫秒级）
+cd ../log-triage     && python -m unittest discover -s tests   # 33 项全绿
+# 真工具跑一遍（吃本机日志样例或自造样例，见各自 README 的用法节）
+```
+（2026-11-09 实测：两个 Python 子工具全绿；Test-Inspect.ps1 也实跑，**通过 61 项、失败 0 项**。）
 
 ---
 

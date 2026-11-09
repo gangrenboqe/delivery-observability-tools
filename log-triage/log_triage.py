@@ -35,6 +35,7 @@ import json
 import re
 import sys
 from collections import Counter, defaultdict
+from collections.abc import Iterator
 from datetime import datetime
 from pathlib import Path
 
@@ -111,7 +112,7 @@ def extract_ts(line: str) -> str:
 
 # ---------------------------------------------------------------- 读取
 
-def iter_text_lines(path: Path):
+def iter_text_lines(path: Path) -> Iterator[tuple[int, str]]:
     """流式逐行读，**不做整份载入**，并对无法解码的字节容错。"""
     with open(path, "r", encoding="utf-8", errors="replace") as f:
         for i, line in enumerate(f, 1):
