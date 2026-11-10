@@ -4,6 +4,7 @@
 """
 
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -37,8 +38,10 @@ class TestNormalize(unittest.TestCase):
         self.assertEqual(normalize("id=deadbeef99"), normalize("id=cafebabe11"))
 
     def test_windows_path_masked(self):
-        got = normalize(r"open C:\Users\Someone\secret.txt failed")
-        self.assertNotIn("Someone", got)
+        # 44 号：用户名取自环境变量，不在测试里硬编码任何用户名（含假占位）
+        user = os.environ.get("USERNAME", "Someone")
+        got = normalize(rf"open C:\Users\{user}\secret.txt failed")
+        self.assertNotIn(user, got)
 
     def test_leading_number_prefix_stripped(self):
         """行首 [123] 是线程号/错误码，去掉它同类才能真正合并。"""

@@ -5,6 +5,7 @@
 
 import datetime as dtmod
 import json
+import os
 import sys
 import unittest
 from pathlib import Path
@@ -69,8 +70,10 @@ class TestNormalizeError(unittest.TestCase):
         self.assertEqual(a, b)
 
     def test_windows_path_masked(self):
-        got = normalize_error(r"cannot open C:\Users\Someone\secret\file.txt")
-        self.assertNotIn("Someone", got)
+        # 44 号：用户名取自环境变量，不在测试里硬编码任何用户名（含假占位）
+        user = os.environ.get("USERNAME", "Someone")
+        got = normalize_error(rf"cannot open C:\Users\{user}\secret\file.txt")
+        self.assertNotIn(user, got)
 
     def test_length_capped(self):
         self.assertLessEqual(len(normalize_error("x" * 500)), 80)

@@ -37,7 +37,7 @@ Assert-Equal (Get-StatusLevel -Value 80 -WarnAt 80 -ErrorAt 90 -HigherIsWorse) "
 Assert-Equal (Get-StatusLevel -Value 90 -WarnAt 80 -ErrorAt 90 -HigherIsWorse) "异常" "边界值 90 → 异常"
 
 Write-Host "`n=== 2. 脱敏（本工具的硬要求）===" -ForegroundColor Cyan
-Assert-Equal ((Protect-Text "路径 C:\Users\Someone\secret.txt").Contains("Someone")) $false "用户目录里的用户名被替换"
+Assert-Equal ((Protect-Text "路径 C:\Users\$env:USERNAME\secret.txt").Contains($env:USERNAME)) $false "路径里的用户名被替换（用户名取自环境变量，不硬编码）"
 Assert-Equal ((Protect-Text "访问 192.168.1.77 失败").Contains("192.168")) $false "IPv4 被替换"
 Assert-Equal ((Protect-Text "机器 $env:COMPUTERNAME 上的错误").Contains($env:COMPUTERNAME)) $false "计算机名被替换（用真实机器名测）"
 Assert-Equal ((Protect-Text "登录用户 $env:USERNAME 失败").Contains($env:USERNAME)) $false "当前用户名被替换"
