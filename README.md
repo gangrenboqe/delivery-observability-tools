@@ -148,3 +148,9 @@ README 曾写"58 项断言"。10 月 13 日给工具入口补集成断言后实�
 - 源目录：本仓库是**发布副本**；开发源在 `../../projects/<工具名>/`
 - 许可证：MIT
 - 三个工具之间**互不依赖**，可以单独取用
+
+## 许可证
+
+自 2026-11-13 起的版本适用 [PolyForm Noncommercial License 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0)：可自由用于个人学习、研究、试验与非商业用途，**不得用于商业目的**。此前发布的版本适用 MIT。
+
+Required Notice: Copyright 2026 谢一竹 (https://github.com/gangrenboqe)
